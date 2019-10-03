@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QString>
+#include <QNetworkInterface>
+#include <QList>
+#include <QDebug>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +21,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QString getHostIP();
 };
 
 #endif // MAINWINDOW_H
