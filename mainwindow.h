@@ -6,6 +6,7 @@
 #include <QNetworkInterface>
 #include <QList>
 #include <QDebug>
+#include "ddnssetting.h"
 
 namespace Ui {
 class MainWindow;
