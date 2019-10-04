@@ -2,7 +2,7 @@
 
 DDnsSetting::DDnsSetting()
 {
-    QFileInfo settingFileInfo("setting.ini");
+    QFileInfo settingFileInfo(QCoreApplication::applicationDirPath() +  "/setting.ini");
     if(settingFileInfo.isFile()) {
         config = new QSettings("setting.ini", QSettings::Format::IniFormat);
         return;
