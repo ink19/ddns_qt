@@ -2,12 +2,13 @@
 
 DDnsSetting::DDnsSetting()
 {
-    QFileInfo settingFileInfo(QCoreApplication::applicationDirPath() +  "/setting.ini");
+    QString filepath = QCoreApplication::applicationDirPath() +  "/setting.ini";
+    QFileInfo settingFileInfo(filepath);
     if(settingFileInfo.isFile()) {
-        config = new QSettings("setting.ini", QSettings::Format::IniFormat);
+        config = new QSettings(filepath, QSettings::Format::IniFormat);
         return;
     }
-    config = new QSettings("setting.ini", QSettings::Format::IniFormat);
+    config = new QSettings(filepath, QSettings::Format::IniFormat);
     config->setValue("DDns/ID", "0");
     config->setValue("DDns/Token", "0");
     config->setValue("DDns/domain", "0");
