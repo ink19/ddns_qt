@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        ddnsloop.cpp \
         ddnssetting.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
+        ddnsloop.h \
         ddnssetting.h \
         mainwindow.h
 
