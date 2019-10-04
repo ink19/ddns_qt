@@ -13,6 +13,17 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QCheckBox>
+#include "ddnsloop.h"
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QFile>
+#include <QJsonObject>
+#include <QDebug>
+#include <QJsonArray>
+
 
 namespace Ui {
 class MainWindow;
@@ -32,13 +43,19 @@ private:
     QLineEdit *DomainEdit;
     QLineEdit *RecordIdEdit;
     QLineEdit *SubDomainEdit;
+    QLabel *IPLabel;
+    QLabel *StatusLable;
     QCheckBox *StatusBox;
     DDnsSetting *setting;
     Ui::MainWindow *ui;
+    QNetworkAccessManager *naManager;
     QString getHostIP();
-    
+    DDnsLoop *loop;
+    void changeStatus(QString IPAddress, bool status);
 private slots:
     void changeSetting();
+    void sendData();
+    void netReply(QNetworkReply *replay);
 };
 
 #endif // MAINWINDOW_H

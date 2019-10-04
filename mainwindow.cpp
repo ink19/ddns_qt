@@ -50,14 +50,14 @@ MainWindow::MainWindow(QWidget *parent) :
     text = new QLabel("IP:");
     mlayout->addWidget(text, 7, 1);
     
-    text = new QLabel(this->getHostIP());
-    mlayout->addWidget(text, 7, 2);
+    IPLabel = new QLabel(this->getHostIP());
+    mlayout->addWidget(IPLabel, 7, 2);
     
     text = new QLabel("Status:");
     mlayout->addWidget(text, 8, 1);
     
-    text = new QLabel("Successful");
-    mlayout->addWidget(text, 8, 2);
+    StatusLable = new QLabel("Successful");
+    mlayout->addWidget(StatusLable, 8, 2);
     
     
     //初始化值
@@ -73,6 +73,13 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     
     connect(changeButton, SIGNAL(clicked()), this, SLOT(changeSetting()));
+    naManager = new QNetworkAccessManager(this);
+    connect(naManager, SIGNAL(finished(QNetworkReply *)), this, SLOT(netReply(QNetworkReply *)));
+    this->loop = new DDnsLoop(this->setting);
+    
+    connect(this->loop, SIGNAL(postdata()), this, SLOT(sendData()));
+    this->loop->stop_run = 0;
+    this->loop->start();
     
     QWidget *mainw = new QWidget(this);
     mainw->setLayout(mlayout);
@@ -82,6 +89,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete this->setting;
+    this->loop->stop_run = 1;
+    this->loop->wait();
+    delete this->loop;
     delete ui;
 }
 
@@ -106,4 +116,44 @@ void MainWindow::changeSetting()
     this->setting->setValue("record_id", this->RecordIdEdit->text());
     this->setting->setValue("sub_domain", this->SubDomainEdit->text());
     this->setting->setValue("status", this->StatusBox->isChecked()?"enable":"disable");
+}
+
+void MainWindow::changeStatus(QString IPAddress, bool status)
+{
+    this->IPLabel->setText(IPAddress);
+    this->StatusLable->setText(status?"Successful":"False");
+}
+
+void MainWindow::sendData()
+{
+    QNetworkRequest request(QUrl("https://dnsapi.cn/Record.Modify"));
+    QByteArray postArray;
+    postArray.append("login_token=" + this->setting->getValue("ID") + "," + this->setting->getValue("Token"));
+    postArray.append("&format=json");
+    postArray.append("&lang=cn");
+    postArray.append("&domain=" + this->setting->getValue("domain"));
+    postArray.append("&record_id=" + this->setting->getValue("record_id"));
+    postArray.append("&sub_domain=" + this->setting->getValue("sub_domain"));
+    postArray.append("&record_type=" + this->setting->getValue("record_type"));
+    postArray.append("&record_line=%e9%bb%98%e8%ae%a4");
+    postArray.append("&value=" + getHostIP());
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentLengthHeader,postArray.size());
+    request.setHeader(QNetworkRequest::UserAgentHeader, "ink19 DDns/0.1 ink19@qq.com");
+    naManager->post(request, postArray);
+}
+
+void MainWindow::netReply(QNetworkReply *replay)
+{
+    bool status = false;
+    QString IPaddress;
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(replay->readAll()));
+    if(jsonDoc.object().take("status").toObject().take("code").toString() == "1") {
+        status = true;
+        IPaddress = jsonDoc.object().take("record").toObject().take("value").toString();
+        this->loop->IPAdress = IPaddress;
+    } else {
+        IPaddress = "Error";
+    }
+    changeStatus(IPaddress, status);
 }
