@@ -7,6 +7,12 @@
 #include <QList>
 #include <QDebug>
 #include "ddnssetting.h"
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QCheckBox>
 
 namespace Ui {
 class MainWindow;
@@ -21,8 +27,18 @@ public:
     ~MainWindow();
 
 private:
+    QLineEdit *IDEdit;
+    QLineEdit *TokenEdit;
+    QLineEdit *DomainEdit;
+    QLineEdit *RecordIdEdit;
+    QLineEdit *SubDomainEdit;
+    QCheckBox *StatusBox;
+    DDnsSetting *setting;
     Ui::MainWindow *ui;
     QString getHostIP();
+    
+private slots:
+    void changeSetting();
 };
 
 #endif // MAINWINDOW_H
