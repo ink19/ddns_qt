@@ -12,52 +12,62 @@ MainWindow::MainWindow(QWidget *parent) :
     QGridLayout *mlayout = new QGridLayout () ;
     QLabel *text;
     
+    int line = 0;
+    
     text = new QLabel("ID");
     IDEdit = new QLineEdit;
-    mlayout->addWidget(text, 1, 1);
-    mlayout->addWidget(IDEdit, 1, 2);
+    line++;
+    mlayout->addWidget(text, line, 1);
+    mlayout->addWidget(IDEdit, line, 2);
     
+    line++;
     text = new QLabel("Token");
     TokenEdit = new QLineEdit;
-    mlayout->addWidget(text, 2, 1);
-    mlayout->addWidget(TokenEdit, 2, 2);
+    mlayout->addWidget(text, line, 1);
+    mlayout->addWidget(TokenEdit, line, 2);
     
+    line++;
     text = new QLabel("Domain");
     DomainEdit = new QLineEdit;
-    mlayout->addWidget(text, 3, 1);
-    mlayout->addWidget(DomainEdit, 3, 2);
+    mlayout->addWidget(text, line, 1);
+    mlayout->addWidget(DomainEdit, line, 2);
     
+    line++;
     text = new QLabel("Record Id");
     RecordIdEdit = new QLineEdit;
-    mlayout->addWidget(text, 4, 1);
-    mlayout->addWidget(RecordIdEdit, 4, 2);
+    mlayout->addWidget(text, line, 1);
+    mlayout->addWidget(RecordIdEdit, line, 2);
     
+    line++;
     text = new QLabel("Sub Domain");
     SubDomainEdit = new QLineEdit;
-    mlayout->addWidget(text, 5, 1);
-    mlayout->addWidget(SubDomainEdit, 5, 2);
+    mlayout->addWidget(text, line, 1);
+    mlayout->addWidget(SubDomainEdit, line, 2);
     
+    line++;
     QPushButton *changeButton = new QPushButton ("Change");
-    mlayout->addWidget(changeButton, 6, 1);
+    mlayout->addWidget(changeButton, line, 1);
     
     QHBoxLayout *choose = new QHBoxLayout;
     text = new QLabel("开始");
     StatusBox = new QCheckBox;
     choose->addWidget(text);
     choose->addWidget(StatusBox);
-    mlayout->addLayout(choose, 6, 2);
+    mlayout->addLayout(choose, line, 2);
     
+    line++;
     text = new QLabel("IP:");
-    mlayout->addWidget(text, 7, 1);
+    mlayout->addWidget(text, line, 1);
     
     IPLabel = new QLabel(this->getHostIP());
-    mlayout->addWidget(IPLabel, 7, 2);
+    mlayout->addWidget(IPLabel, line, 2);
     
+    line++;
     text = new QLabel("Status:");
-    mlayout->addWidget(text, 8, 1);
+    mlayout->addWidget(text, line, 1);
     
     StatusLable = new QLabel("Successful");
-    mlayout->addWidget(StatusLable, 8, 2);
+    mlayout->addWidget(StatusLable, line, 2);
     
     
     //初始化值
