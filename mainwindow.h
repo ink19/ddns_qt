@@ -23,7 +23,8 @@
 #include <QJsonObject>
 #include <QDebug>
 #include <QJsonArray>
-
+#include <QTcpServer>
+#include <QTcpSocket>
 
 namespace Ui {
 class MainWindow;
@@ -51,8 +52,10 @@ private:
     QNetworkAccessManager *naManager;
     QString getHostIP();
     DDnsLoop *loop;
+    QTcpServer *server;
     void changeStatus(QString IPAddress, bool status);
 private slots:
+    void getNewConnection();
     void changeSetting();
     void sendData();
     void netReply(QNetworkReply *replay);

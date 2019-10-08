@@ -72,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
         this->StatusBox->setCheckState(Qt::CheckState::Unchecked);
     }
     
+    //添加循环
     connect(changeButton, SIGNAL(clicked()), this, SLOT(changeSetting()));
     naManager = new QNetworkAccessManager(this);
     connect(naManager, SIGNAL(finished(QNetworkReply *)), this, SLOT(netReply(QNetworkReply *)));
@@ -80,6 +81,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->loop, SIGNAL(postdata()), this, SLOT(sendData()));
     this->loop->stop_run = 0;
     this->loop->start();
+    
+    //添加监听
+    server = new QTcpServer;
+    connect(server, SIGNAL(newConnection()), this, SLOT(getNewConnection()));
+    if(!server->listen(QHostAddress::Any, 10517)) {
+        qDebug() << server->errorString();
+    }
     
     QWidget *mainw = new QWidget(this);
     mainw->setLayout(mlayout);
@@ -90,6 +98,8 @@ MainWindow::~MainWindow()
 {
     delete this->setting;
     this->loop->stop_run = 1;
+    server->close();
+    delete server;
     this->loop->wait();
     delete this->loop;
     delete ui;
@@ -122,6 +132,13 @@ void MainWindow::changeStatus(QString IPAddress, bool status)
 {
     this->IPLabel->setText(IPAddress);
     this->StatusLable->setText(status?"Successful":"False");
+}
+
+void MainWindow::getNewConnection()
+{
+    auto socket_n = server->nextPendingConnection();
+    socket_n->write("517 room server\n");
+    socket_n->close();
 }
 
 void MainWindow::sendData()
