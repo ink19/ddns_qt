@@ -17,6 +17,7 @@ DDnsSetting::DDnsSetting()
     config->setValue("DDns/record_type", "A");
     config->setValue("DDns/record_line", "默认");
     config->setValue("DDns/status", "enable");
+    config->setValue("DDns/port", "10517");
 }
 
 QString DDnsSetting::getValue(QString key)

@@ -44,6 +44,7 @@ private:
     QLineEdit *DomainEdit;
     QLineEdit *RecordIdEdit;
     QLineEdit *SubDomainEdit;
+    QLineEdit *PortEdit;
     QLabel *IPLabel;
     QLabel *StatusLable;
     QCheckBox *StatusBox;

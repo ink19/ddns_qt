@@ -45,6 +45,12 @@ MainWindow::MainWindow(QWidget *parent) :
     mlayout->addWidget(SubDomainEdit, line, 2);
     
     line++;
+    text = new QLabel("Port");
+    PortEdit = new QLineEdit;
+    mlayout->addWidget(text, line, 1);
+    mlayout->addWidget(PortEdit, line, 2);
+    
+    line++;
     QPushButton *changeButton = new QPushButton ("Change");
     mlayout->addWidget(changeButton, line, 1);
     
@@ -76,6 +82,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->DomainEdit->setText(this->setting->getValue("domain"));
     this->RecordIdEdit->setText(this->setting->getValue("record_id"));
     this->SubDomainEdit->setText(this->setting->getValue("sub_domain"));
+    this->PortEdit->setText(this->setting->getValue("port"));
+    
     if(this->setting->getValue("status") == "enable") {
         this->StatusBox->setCheckState(Qt::CheckState::Checked);
     } else {
@@ -95,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //添加监听
     server = new QTcpServer;
     connect(server, SIGNAL(newConnection()), this, SLOT(getNewConnection()));
-    if(!server->listen(QHostAddress::Any, 10517)) {
+    if(!server->listen(QHostAddress::Any, static_cast<quint16>(setting->getValue("port").toInt()))) {
         qDebug() << server->errorString();
     }
     
@@ -136,6 +144,12 @@ void MainWindow::changeSetting()
     this->setting->setValue("record_id", this->RecordIdEdit->text());
     this->setting->setValue("sub_domain", this->SubDomainEdit->text());
     this->setting->setValue("status", this->StatusBox->isChecked()?"enable":"disable");
+    this->setting->setValue("port", this->PortEdit->text());
+    //connect(server, SIGNAL(newConnection()), this, SLOT(getNewConnection()));
+    server->close();
+    if(!server->listen(QHostAddress::Any, static_cast<quint16>(setting->getValue("port").toInt()))) {
+        qDebug() << server->errorString();
+    }
 }
 
 void MainWindow::changeStatus(QString IPAddress, bool status)
