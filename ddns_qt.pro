@@ -27,16 +27,17 @@ CONFIG += c++11
 SOURCES += \
         ddnsloop.cpp \
         ddnssetting.cpp \
+        dnsapi.cpp \
         main.cpp \
         mainwindow.cpp
 
 HEADERS += \
         ddnsloop.h \
         ddnssetting.h \
+        dnsapi.h \
         mainwindow.h
 
-FORMS += \
-        mainwindow.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

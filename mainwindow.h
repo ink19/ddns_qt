@@ -25,6 +25,7 @@
 #include <QJsonArray>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include "dnsapi.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +52,7 @@ private:
     DDnsSetting *setting;
     Ui::MainWindow *ui;
     QNetworkAccessManager *naManager;
+    DnsApi *dnsapim;
     QString getHostIP();
     DDnsLoop *loop;
     QTcpServer *server;

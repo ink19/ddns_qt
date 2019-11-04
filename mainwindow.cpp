@@ -92,8 +92,11 @@ MainWindow::MainWindow(QWidget *parent) :
     
     //添加循环
     connect(changeButton, SIGNAL(clicked()), this, SLOT(changeSetting()));
-    naManager = new QNetworkAccessManager(this);
-    connect(naManager, SIGNAL(finished(QNetworkReply *)), this, SLOT(netReply(QNetworkReply *)));
+    //naManager = new QNetworkAccessManager(this);
+    //初始化dnspod api
+    dnsapim = new DnsApi(this->setting->getValue("ID"), this->setting->getValue("Token"), this->setting->getValue("domain"));
+    connect(dnsapim, SIGNAL(getReturn(QNetworkReply*)), this, SLOT(netReply(QNetworkReply*)));
+    
     this->loop = new DDnsLoop(this->setting);
     
     connect(this->loop, SIGNAL(postdata()), this, SLOT(sendData()));
@@ -146,6 +149,10 @@ void MainWindow::changeSetting()
     this->setting->setValue("status", this->StatusBox->isChecked()?"enable":"disable");
     this->setting->setValue("port", this->PortEdit->text());
     //connect(server, SIGNAL(newConnection()), this, SLOT(getNewConnection()));
+    this->dnsapim->TOKEN = this->TokenEdit->text();
+    this->dnsapim->TOKEN_ID = this->IDEdit->text();
+    this->dnsapim->DOMAIN = this->DomainEdit->text();
+    
     server->close();
     if(!server->listen(QHostAddress::Any, static_cast<quint16>(setting->getValue("port").toInt()))) {
         qDebug() << server->errorString();
@@ -167,21 +174,22 @@ void MainWindow::getNewConnection()
 
 void MainWindow::sendData()
 {
-    QNetworkRequest request(QUrl("https://dnsapi.cn/Record.Modify"));
-    QByteArray postArray;
-    postArray.append("login_token=" + this->setting->getValue("ID") + "," + this->setting->getValue("Token"));
-    postArray.append("&format=json");
-    postArray.append("&lang=cn");
-    postArray.append("&domain=" + this->setting->getValue("domain"));
-    postArray.append("&record_id=" + this->setting->getValue("record_id"));
-    postArray.append("&sub_domain=" + this->setting->getValue("sub_domain"));
-    postArray.append("&record_type=" + this->setting->getValue("record_type"));
-    postArray.append("&record_line=%e9%bb%98%e8%ae%a4");
-    postArray.append("&value=" + getHostIP());
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-    request.setHeader(QNetworkRequest::ContentLengthHeader,postArray.size());
-    request.setHeader(QNetworkRequest::UserAgentHeader, "ink19 DDns/0.1 ink19@qq.com");
-    naManager->post(request, postArray);
+//    QNetworkRequest request(QUrl("https://dnsapi.cn/Record.Modify"));
+//    QByteArray postArray;
+//    postArray.append("login_token=" + this->setting->getValue("ID") + "," + this->setting->getValue("Token"));
+//    postArray.append("&format=json");
+//    postArray.append("&lang=cn");
+//    postArray.append("&domain=" + this->setting->getValue("domain"));
+//    postArray.append("&record_id=" + this->setting->getValue("record_id"));
+//    postArray.append("&sub_domain=" + this->setting->getValue("sub_domain"));
+//    postArray.append("&record_type=" + this->setting->getValue("record_type"));
+//    postArray.append("&record_line=%e9%bb%98%e8%ae%a4");
+//    postArray.append("&value=" + getHostIP());
+//    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+//    request.setHeader(QNetworkRequest::ContentLengthHeader,postArray.size());
+//    request.setHeader(QNetworkRequest::UserAgentHeader, "ink19 DDns/0.1 ink19@qq.com");
+//    naManager->post(request, postArray);
+    this->dnsapim->changeRecord(this->setting->getValue("record_id"), this->setting->getValue("sub_domain"), this->setting->getValue("record_type"), getHostIP());
 }
 
 void MainWindow::netReply(QNetworkReply *replay)
